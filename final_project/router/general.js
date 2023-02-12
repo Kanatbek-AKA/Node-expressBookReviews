@@ -3,29 +3,42 @@ let books = require("./booksdb.js");
 let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
 const public_users = express.Router();
-
+// const axios = require("axios");
 
 public_users.post("/register", (req,res) => {
   //Write your code here
   const username = req.body.username;
-  const password = req.body.password;
-
+  const password = req.body.password;    
   if (username && password ) {
-    if (!isValid(username)) {
-      users.push({"username": username, 'password': password});
-      return res.status(200).json({message: "User successfully registered. Now you can login!"});
-    } else {
-        return res.status(200).json({message: "User allready exists!"});
-    }
-  }
+        if (!isValid(username)) {
+        users.push({"username": username, 'password': password});
+        return res.status(200).json({message: "User successfully registered. Now you can login!"});
+        } else {
+            return res.status(200).json({message: "User allready exists!"});
+        }
+        }
   res.status(401).json({message : 'Unable to register user. Try again!'});
 });
+
+    
+// // Use promise or Async Await with Axios covered -  TODO 
+// const promiseInAction = new Promise ((resolve, reject) => {
+//     // Assignment asks to use get/post/put/delete with axios URI or ....? 
+//     .......
+// })
+
+// Alternative
+// async function demoAsyncAwait() {
+//     return await doYourStaff(...)
+// }
 
 // Get the book list available in the shop
 public_users.get('/',function (req, res) {
   //Write your code here 
-  const book = Object.entries(books);
-  return res.status(200).send(book);
+
+    const book = Object.entries(books);
+    return res.status(200).send(book);  
+
 });
 
 // Get book details based on ISBN

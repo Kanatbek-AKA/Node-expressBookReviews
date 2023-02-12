@@ -50,32 +50,42 @@ regd_users.post("/login", (req,res) => {
 
 // Add a book review
 regd_users.put("/auth/review/:isbn", (req, res) => {
-  //Write your code hereconst isbn = req.params.isbn;
+  //Write your code here
+    const isbn = req.params.isbn;
     let book = books[isbn];
-    
-// From here I need to modify the code.
-
-    if (book) { //Check if book isbn exists.
-
+    if (book) { //Check if book isbn exists. To check console.log(Object.keys(books)) it return string numbers in a array i.e. list  
+        // Re-work
         let reviews = req.query.reviews;
-        let username = req.body.username;
-         
-        if(reviews) {  //  
-            book["review"] = reviews; 
+        let reviewer = req.session.authorization['username']; // jwb 
+        if(reviews) {
+            book['reviews'][reviewer] = reviews;
+            books[isbn] = book;
         }
-        // if(username) {
-        //     book["visitor"] = username;
-        // }
-
-        // same user remove preview review in the same isbn number     
-        books[isbn]= book;
-        res.send(`Review of ${isbn} was updated.`);
-        // new User reviews post()
-    }
-    else{
+        res.send(`The review for the book with ISBN  ${isbn} has been added/updated.`);
+    //
+    }else{
         res.send("Unable to add review!");
     }
 });
+
+// Delete user reviews
+regd_users.delete("/auth/review/:isbn", (req, res) => {
+    //Write your code here
+    let isbndelete = req.params.isbn;
+    let bookDelete = books[isbndelete];
+
+    if (bookDelete){
+        let reviews = req.query.reviews;
+        let reviewer = req.session.authorization['username']; // jwb 
+        if (reviews) {
+            delete bookDelete['reviews'][reviewer]     
+        }
+        res.send(`Reviews with the isbn  ${isbndelete} deleted.`);
+        
+    } else{
+        res.send("Unable to remove review!");
+    }
+}); 
 
 module.exports.authenticated = regd_users;
 module.exports.isValid = isValid;
