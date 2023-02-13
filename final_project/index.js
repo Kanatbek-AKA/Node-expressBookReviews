@@ -10,6 +10,7 @@ app.use(express.json());
 
 app.use("/customer",session({secret:"fingerprint_customer",resave: true, saveUninitialized: true}))
 
+// Here might be added any suffix  after authentication for registred users
 app.use("/customer/auth/*", function auth(req,res,next){
 //Write the authenication mechanism here
 if (req.session.authorization) {
@@ -18,6 +19,7 @@ if (req.session.authorization) {
         if (!error) {
             req.user = user;
             next();
+            // res.send(this);  // testing
         } else {
             return res.status(403).json({message : "User not authenticated"});
         }
@@ -31,5 +33,6 @@ const PORT =5000;
 
 app.use("/customer", customer_routes);
 app.use("/", genl_routes);
+// app.use("customer/isbn", cus)
 
-app.listen(PORT,()=>console.log("Server is running"));
+app.listen(PORT,()=>console.log("Server is running " , PORT));
